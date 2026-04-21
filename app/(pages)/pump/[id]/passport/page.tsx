@@ -1,3 +1,9 @@
+'use client'
+
+import { useEffect, useState } from 'react'
+import { IPassport } from '@/app/(pages)/pump/[id]/passport/passport'
+import { usePathname, useRouter } from 'next/navigation'
+import { usePassportStore } from '@/app/storage/useStorage'
 import Link from 'next/link'
 
 interface Metric {
@@ -7,25 +13,119 @@ interface Metric {
 }
 
 const page = () => {
-	const technicalData: Metric[] = [
-		{ label: 'Марка насоса', value: 'ЭЦН-5-50' },
-		{ label: 'Интервал перфорации', value: '1200–1250', unit: 'м' },
-		{ label: 'Прием насоса', value: 1210, unit: 'м' },
-		{ label: 'Уровень жидкости (дин)', value: 850, unit: 'м' },
-		{ label: 'Уровень жидкости (стат)', value: 780, unit: 'м' },
-		{ label: 'Кол-во штанг', value: 45, unit: 'шт' },
-		{ label: 'Вязкость', value: 1.2, unit: 'мПа·с' },
+	const pathname = usePathname()
+	const router = useRouter()
+
+	const getIp = () => {
+		const arr_path = pathname.split('/')
+		return Number(arr_path[2])
+	}
+
+	const passports = usePassportStore(state => state.passports)
+	const update = usePassportStore(state => state.update)
+
+	const passport_pump = passports.find(el => el.id === getIp())
+
+	if (!passport_pump) {
+		return router.push('/pump')
+	}
+
+	// 3. Формируем массивы прямо здесь (это Derived State / Вычисляемое состояние)
+	const technicalData = [
+		{ label: 'Марка насоса', value: passport_pump.specification.mark },
+		{
+			label: 'Интервал перфорации',
+			value: passport_pump.specification.interval,
+			unit: 'м',
+		},
+		{
+			label: 'Прием насоса',
+			value: passport_pump.specification.reception,
+			unit: 'м',
+		},
+		{
+			label: 'Уровень жидкости (дин)',
+			value: passport_pump.specification.liquid_level_1,
+			unit: 'м',
+		},
+		{
+			label: 'Уровень жидкости (стат)',
+			value: passport_pump.specification.liquid_level_2,
+			unit: 'м',
+		},
+		{
+			label: 'Кол-во штанг',
+			value: passport_pump.specification.count,
+			unit: 'шт',
+		},
+		{
+			label: 'Вязкость',
+			value: passport_pump.specification.viscosity,
+			unit: 'мПа·с',
+		},
 	]
 
-	const productData: Metric[] = [
-		{ label: 'Плотность', value: 870, unit: 'кг/м³' },
-		{ label: 'Газосодержание', value: 15.5, unit: 'м³/т' },
-		{ label: 'Мех. примеси', value: 50, unit: 'мг/л' },
-		{ label: 'Минерализация', value: 12000, unit: 'мг/л' },
-		{ label: 'Средняя обводненность (7 сут)', value: 45.2, unit: '%' },
-		{ label: 'Средний суточный Qж (7 сут)', value: 120.5, unit: 'м³/сут' },
-		{ label: 'Средний суточный Qн (7 сут)', value: 65.3, unit: 'т/сут' },
+	const productData = [
+		{
+			label: 'Плотность',
+			value: passport_pump.property.density,
+			unit: 'кг/м³',
+		},
+		{
+			label: 'Газосодержание',
+			value: passport_pump.property.gas,
+			unit: 'м³/т',
+		},
+		{
+			label: 'Мех. примеси',
+			value: passport_pump.property.impurities,
+			unit: 'мг/л',
+		},
+		{
+			label: 'Минерализация',
+			value: passport_pump.property.mineralization,
+			unit: 'мг/л',
+		},
+		{
+			label: 'Средняя обводненность (7 сут)',
+			value: passport_pump.property.average_water_content,
+			unit: '%',
+		},
+		{
+			label: 'Средний суточный Qж (7 сут)',
+			value: passport_pump.property.average_gf,
+			unit: 'м³/сут',
+		},
+		{
+			label: 'Средний суточный Qн (7 сут)',
+			value: passport_pump.property.average_gn,
+			unit: 'т/сут',
+		},
 	]
+
+	// const updateDataPass = () => {
+	// 	update({
+	// 		id: 1256,
+	// 		specification: {
+	// 			mark: 'ЭЦН-5-50',
+	// 			interval: 56,
+	// 			reception: 56,
+	// 			liquid_level_1: 84,
+	// 			liquid_level_2: 934,
+	// 			count: 56,
+	// 			viscosity: 9012,
+	// 		},
+	// 		property: {
+	// 			density: 56,
+	// 			gas: 56,
+	// 			impurities: 56,
+	// 			mineralization: 56,
+	// 			average_water_content: 56,
+	// 			average_gf: 56,
+	// 			average_gn: 56,
+	// 		},
+	// 	})
+	// }
 
 	return (
 		<div className='min-h-screen  p-6 text-slate-100 font-sans ml-74 w-full'>
@@ -49,7 +149,7 @@ const page = () => {
 								>
 									<span className='text-slate-100 text-sm '>{item.label}</span>
 									<span className='font-mono font-medium text-slate-100'>
-										{item.value}{' '}
+										{item.value}
 										<span className='text-slate-100 text-xs ml-1'>
 											{item.unit}
 										</span>
@@ -58,9 +158,11 @@ const page = () => {
 							))}
 						</div>
 					</div>
-					<button className='bg-slate-900/50 border border-slate-800 rounded-xl p-3 backdrop-blur-sm mt-5 w-full text-slate-100 cursor-pointer hover:bg-slate-950/50 duration-400'>
+					<Link href={`${pathname}/update`}>
+							<button className='bg-slate-900/50 border border-slate-800 rounded-xl p-3 backdrop-blur-sm mt-5 w-full text-slate-100 cursor-pointer hover:bg-slate-950/50 duration-400'>
 						Редактировать
 					</button>
+					</Link>
 				</div>
 
 				<div>
@@ -85,7 +187,9 @@ const page = () => {
 							))}
 						</div>
 					</div>
-					<button className='bg-slate-900/50 border border-slate-800 rounded-xl p-3 backdrop-blur-sm mt-5 w-full text-slate-100 cursor-pointer hover:bg-slate-950/50 duration-400'>
+					<button
+						className='bg-slate-900/50 border border-slate-800 rounded-xl p-3 backdrop-blur-sm mt-5 w-full text-slate-100 cursor-pointer hover:bg-slate-950/50 duration-400'
+					>
 						Добавить ПРС
 					</button>
 				</div>

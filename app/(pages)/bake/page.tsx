@@ -1,19 +1,20 @@
 'use client'
 
-import { WINCC_API } from '@/app/utils/api';
-import axios from 'axios';
 import { useRouter } from 'next/navigation';
-import { useEffect, useState } from 'react';
 
 interface IData {
 	id: number
-	tok: number
+	current: number
 	freq: number
 	speed: number
+	resource: number
 }
 
 const page = () => {
-  const [data, setData] = useState<IData[]>()
+	const data: IData[] = [
+		{ id: 1245, current: 45, freq: 50, speed: 2800, resource: 12 },
+		{ id: 2176, current: 48, freq: 48, speed: 2750, resource: 17 },
+	]
 
 	const router = useRouter()
 
@@ -21,38 +22,8 @@ const page = () => {
     router.push(`/pump/${id}`)
   }
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await WINCC_API.post('/values', {
-            variableNames: [ 
-          '5875.tok_dvigatel',
-					'5875.output_frequency',
-					'5875.speed_skv',
-             ],
-        });
-        setData([
-          {
-            id: 5875,
-            tok: response.data[0].value,
-            freq: response.data[1].value,
-            speed: response.data[2].value
-          }
-        ])  
-        
-      } catch (error) {
-        console.error("Ошибка загрузки:", error);
-      }
-    }
-    fetchData()
-    const interval = setInterval(fetchData, 5000)
-    return () => clearInterval(interval)
-  }, [])
-
 	return (
-		data 
-    ?
-    <div className="ml-74 w-full p-6">
+		<div className="ml-74 w-full p-6">
         <div className="bg-white rounded-lg shadow-lg border border-gray-400 overflow-hidden">
           <table className="w-full text-left border-collapse">
             <thead>
@@ -69,17 +40,18 @@ const page = () => {
               {data.map((row, index) => (
                 <tr key={index} className="hover:bg-gray-100 transition-colors text-gray-800 cursor-pointer" onClick={() => handleSubmit(row.id)}>
                   <td className="px-6 py-4 font-bold text-slate-900">{row.id}</td>
+                  <td className="px-6 py-4">{row.current}</td>
                   <td className="px-6 py-4">{row.freq}</td>
                   <td className="px-6 py-4 text-gray-600 italic">{row.speed}</td>
                   <td className="px-6 py-4 text-right">
                     <div className="flex items-center justify-end gap-3">
                       <div className="w-24 bg-gray-200 rounded-full h-2.5 overflow-hidden">
                         <div 
-                          className={`h-2.5 ${15 > 10 ? 'bg-green-600' : 'bg-red-500'}`} 
-                          style={{ width: `${(15 / 24) * 100}%` }}
+                          className={`h-2.5 ${row.resource > 10 ? 'bg-green-600' : 'bg-red-500'}`} 
+                          style={{ width: `${(row.resource / 24) * 100}%` }}
                         ></div>
                       </div>
-                      <span className="font-bold w-6">{15}</span>
+                      <span className="font-bold w-6">{row.resource}</span>
                     </div>
                   </td>
                 </tr>
@@ -88,8 +60,6 @@ const page = () => {
           </table>
         </div>
       </div>
-      :
-      <></>
 	)
 }
 
