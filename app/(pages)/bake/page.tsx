@@ -3,23 +3,27 @@
 import { useRouter } from 'next/navigation';
 
 interface IData {
-	id: number
-	current: number
-	freq: number
-	speed: number
-	resource: number
+	name: string
+	temp1: number
+	temp2: number
+	pressure_oil: number
+	temp_oil: number
+  pressure_void: number
+  expenditure_oil: number
+  temp_exit_oil: number
 }
 
 const page = () => {
 	const data: IData[] = [
-		{ id: 1245, current: 45, freq: 50, speed: 2800, resource: 12 },
-		{ id: 2176, current: 48, freq: 48, speed: 2750, resource: 17 },
+		{ name: "10A-1",  temp1: 0.0, temp2: 0.0, pressure_oil: 1.1, temp_oil: 25.4, pressure_void: 2.5, expenditure_oil: 19.7, temp_exit_oil: -49.1},
+		{ name: "10A-2",  temp1: 0.0, temp2: 0.0, pressure_oil: 1.1, temp_oil: 25.4, pressure_void: 2.5, expenditure_oil: 19.7, temp_exit_oil: -49.1},
+		{ name: "10A-3",  temp1: 0.0, temp2: 0.0, pressure_oil: 1.1, temp_oil: 25.4, pressure_void: 2.5, expenditure_oil: 19.7, temp_exit_oil: -49.1},
 	]
 
 	const router = useRouter()
 
-  const handleSubmit = (id: number) => {
-    router.push(`/pump/${id}`)
+  const handleSubmit = (name: string) => {
+    router.push(`/bake/${name}`)
   }
 
 	return (
@@ -28,32 +32,28 @@ const page = () => {
           <table className="w-full text-left border-collapse">
             <thead>
               <tr className="bg-slate-800 text-white uppercase text-xs tracking-wider">
-                <th className="px-6 py-4">№ Скважины</th>
-                <th className="px-6 py-4">Выходной ток, А</th>
-                <th className="px-6 py-4">Выходная частота, Гц</th>
-                <th className="px-6 py-4">Скорость двигателя, Об/мин</th>
-                <th className="px-6 py-4 text-right">Ост. Ресурс (мес)</th>
+                <th className="px-6 py-4">Наименование печи</th>
+                <th className="px-6 py-4">T змеевика 1, °C</th>
+                <th className="px-6 py-4">T змеевика 2, °C</th>
+                <th className="px-6 py-4">P входа нефти, МПа</th>
+                <th className="px-6 py-4">T входа нефти, °C</th>
+                <th className="px-6 py-4">P воздуха, кПа</th>
+                <th className="px-6 py-4">Расход нефти, м³/ч</th>
+                <th className="px-6 py-4">T выхода нефти, °C</th>
               </tr>
             </thead>
             
             <tbody className="divide-y divide-gray-200">
               {data.map((row, index) => (
-                <tr key={index} className="hover:bg-gray-100 transition-colors text-gray-800 cursor-pointer" onClick={() => handleSubmit(row.id)}>
-                  <td className="px-6 py-4 font-bold text-slate-900">{row.id}</td>
-                  <td className="px-6 py-4">{row.current}</td>
-                  <td className="px-6 py-4">{row.freq}</td>
-                  <td className="px-6 py-4 text-gray-600 italic">{row.speed}</td>
-                  <td className="px-6 py-4 text-right">
-                    <div className="flex items-center justify-end gap-3">
-                      <div className="w-24 bg-gray-200 rounded-full h-2.5 overflow-hidden">
-                        <div 
-                          className={`h-2.5 ${row.resource > 10 ? 'bg-green-600' : 'bg-red-500'}`} 
-                          style={{ width: `${(row.resource / 24) * 100}%` }}
-                        ></div>
-                      </div>
-                      <span className="font-bold w-6">{row.resource}</span>
-                    </div>
-                  </td>
+                <tr key={index} className="hover:bg-gray-100 transition-colors text-gray-800 cursor-pointer" onClick={() => handleSubmit(row.name)}>
+                  <td className="px-6 py-4 font-bold text-slate-900">{row.name}</td>
+                  <td className="px-6 py-4">{row.temp1}</td>
+                  <td className="px-6 py-4">{row.temp2}</td>
+                  <td className="px-6 py-4">{row.pressure_oil}</td>
+                  <td className="px-6 py-4">{row.temp_oil}</td>
+                  <td className="px-6 py-4">{row.pressure_void}</td>
+                  <td className="px-6 py-4">{row.expenditure_oil}</td>
+                  <td className="px-6 py-4">{row.temp_exit_oil}</td>
                 </tr>
               ))}
             </tbody>

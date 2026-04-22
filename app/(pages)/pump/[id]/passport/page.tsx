@@ -1,10 +1,11 @@
 'use client'
 
-import { useEffect, useState } from 'react'
-import { IPassport } from '@/app/(pages)/pump/[id]/passport/passport'
-import { usePathname, useRouter } from 'next/navigation'
-import { usePassportStore } from '@/app/storage/useStorage'
+import { usePassportStore } from '@/app/storage/useStoragePump'
 import Link from 'next/link'
+import { usePathname, useRouter } from 'next/navigation'
+import PumpFormModal from './widget'
+import { useEffect, useState } from 'react'
+import { IPassportPump } from './passport'
 
 interface Metric {
 	label: string
@@ -22,15 +23,15 @@ const page = () => {
 	}
 
 	const passports = usePassportStore(state => state.passports)
-	const update = usePassportStore(state => state.update)
+	const update = usePassportStore(state => state.updatePump)
 
-	const passport_pump = passports.find(el => el.id === getIp())
+	const passport_pump = passports.passport_pump.find(el => el.id === getIp())
+	const passport_prc = passports.passport_prc.find(el => el.id === getIp())
 
 	if (!passport_pump) {
 		return router.push('/pump')
 	}
 
-	// 3. Формируем массивы прямо здесь (это Derived State / Вычисляемое состояние)
 	const technicalData = [
 		{ label: 'Марка насоса', value: passport_pump.specification.mark },
 		{
@@ -103,29 +104,14 @@ const page = () => {
 		},
 	]
 
-	// const updateDataPass = () => {
-	// 	update({
-	// 		id: 1256,
-	// 		specification: {
-	// 			mark: 'ЭЦН-5-50',
-	// 			interval: 56,
-	// 			reception: 56,
-	// 			liquid_level_1: 84,
-	// 			liquid_level_2: 934,
-	// 			count: 56,
-	// 			viscosity: 9012,
-	// 		},
-	// 		property: {
-	// 			density: 56,
-	// 			gas: 56,
-	// 			impurities: 56,
-	// 			mineralization: 56,
-	// 			average_water_content: 56,
-	// 			average_gf: 56,
-	// 			average_gn: 56,
-	// 		},
-	// 	})
-	// }
+	const [open, setOpen] = useState<boolean>(false)
+
+	const closeWidget = () => {
+		setOpen(false)
+	}
+	const openWidget = () => {
+		setOpen(true)
+	}
 
 	return (
 		<div className='min-h-screen  p-6 text-slate-100 font-sans ml-74 w-full'>
@@ -159,9 +145,9 @@ const page = () => {
 						</div>
 					</div>
 					<Link href={`${pathname}/update`}>
-							<button className='bg-slate-900/50 border border-slate-800 rounded-xl p-3 backdrop-blur-sm mt-5 w-full text-slate-100 cursor-pointer hover:bg-slate-950/50 duration-400'>
-						Редактировать
-					</button>
+						<button className='bg-slate-900/50 border border-slate-800 rounded-xl p-3 backdrop-blur-sm mt-5 w-full text-slate-100 cursor-pointer hover:bg-slate-950/50 duration-400'>
+							Редактировать
+						</button>
 					</Link>
 				</div>
 
@@ -189,11 +175,45 @@ const page = () => {
 					</div>
 					<button
 						className='bg-slate-900/50 border border-slate-800 rounded-xl p-3 backdrop-blur-sm mt-5 w-full text-slate-100 cursor-pointer hover:bg-slate-950/50 duration-400'
+						onClick={openWidget}
 					>
 						Добавить ПРС
 					</button>
 				</div>
 			</div>
+
+			<div className='max-w-6xl mx-auto mt-6 w-full'>
+				<table className='text-left bg-slate-900/50 rounded-2xl p-6 backdrop-blur-sm w-full'>
+					<thead>
+						<tr className=' text-slate-100  uppercase text-xs tracking-wider w-full'>
+							<th className='px-6 py-4 border-slate-700'>№</th>
+							<th className='px-6 py-4 border-slate-700'>Дата</th>
+							<th className='px-6 py-4 border-slate-700'>
+								Модель износа
+							</th>
+							<th className='px-6 py-4  border-slate-700'>Износ, %</th>
+						</tr>
+					</thead>
+					<tbody className='divide-y divide-slate-800'>
+						{
+							passport_prc
+							? 
+							passport_prc.data.map(el => (
+						<tr className='transition-colors' key={el.id+el.data}>
+							<td className='px-6 py-3 text-slate-100 font-mono'>{el.id}</td>
+							<td className='px-6 py-3 text-slate-100 font-mono'>{el.data}</td>
+							<td className='px-6 py-3 text-slate-100 font-mono'>{el.model}</td>
+							<td className='px-6 py-3 text-slate-100 font-mono'>{el.iznos || 0}</td>
+						</tr>
+							))
+							: 
+							""
+						}
+					</tbody>
+				</table>
+			</div>
+
+			<PumpFormModal isOpen={open} onClose={closeWidget} />
 		</div>
 	)
 }

@@ -13,37 +13,13 @@ interface Metric {
 }
 
 const page = () => {
-	const [id, setId] = useState<number>()
+
 	const path = usePathname()
 
 	const getIp = () => {
 		const arr_path = path.split('/')
 		return arr_path[2]
 	}
-
-	// let telemetryData: Metric[] = [
-	// 	{ label: 'Давление трубное', value: 1.6, unit: 'кг/см²' },
-	// 	{ label: 'Затрубное давление', value: 0.0, unit: 'кг/см²' },
-	// 	{ label: 'Температура на устье', value: 112, unit: '°C' },
-	// 	{ label: 'Мгновенный расход СКЖ', value: 3.44, unit: 'т/сут' },
-	// 	{ label: 'Суммарная масса', value: 13171.7, unit: 'т' },
-	// 	{ label: 'Накоп. расх. пред. сутки', value: 9.9, unit: 'т' },
-	// 	{ label: 'Состояние ЭКМ', value: 'Не в норме', status: 'error' },
-	// 	{ label: 'Положение двери шкафа АСУ', value: 'Закрыт', status: 'normal' },
-	// 	{ label: 'Работа ПЛК от', value: 'От сети 220V', status: 'normal' },
-	// 	{ label: 'Контроль питания', value: 'В норме', status: 'normal' },
-	// ]
-
-	// const vfdData: Metric[] = [
-	// 	{ label: 'Тип частотника', value: 'CanWorld360' },
-	// 	{ label: 'Выходная частота', value: 26.875, unit: 'Гц' },
-	// 	{ label: 'Ток двигателя', value: 13.0, unit: 'A' },
-	// 	{ label: 'Нагрузка двигателя', value: -8.9, unit: '%' },
-	// 	{ label: 'Расход эл. энергии', value: 25984, unit: 'кВт' },
-	// 	{ label: 'Напр. звене пост. тока', value: 559.0, unit: 'В' },
-	// 	{ label: 'Температура ЧРП', value: 44.0, unit: '°C' },
-	// 	{ label: 'Скорость двигателя', value: 809, unit: 'об/мин' },
-	// ]
 
 	const [telemetryData, setTelemetryData] = useState<Metric[]>()
 	const [vfdData, setVfdData] = useState<Metric[]>()

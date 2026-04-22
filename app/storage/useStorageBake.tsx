@@ -1,10 +1,10 @@
 import { create } from 'zustand';
 import { persist, createJSONStorage } from 'zustand/middleware';
-import passport, { IPassport } from '../(pages)/pump/[id]/passport/passport'
+import passport, { IPassportBake } from '../(pages)/bake/[id]/passport/passport'
 
 interface PassportStore {
-  passports: IPassport[];
-  update: (value: IPassport) => void;
+  passports: IPassportBake[];
+  update: (value: IPassportBake) => void;
 }
 
 // Создаем хранилище
@@ -13,17 +13,17 @@ export const usePassportStore = create<PassportStore>()(
     (set) => ({
       passports: passport,
       
-      update: (value: IPassport) => 
+      update: (value: IPassportBake) => 
         set((state) => ({
           passports: state.passports.map((p) =>
-            p.id === value.id
+            p.name === value.name
               ? value
               : p
           ),
         })),
     }),
     {
-      name: 'passport-storage',
+      name: 'passport-storage-bake',
       storage: createJSONStorage(() => sessionStorage),
       // Добавьте этот метод для отладки
       onRehydrateStorage: () => (state, error) => {
