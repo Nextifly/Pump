@@ -12,6 +12,22 @@ interface Metric {
 	status?: 'normal' | 'error' | 'neutral'
 }
 
+type TFC = 
+  | "Нет частотника" 
+  | "Siemens V20" 
+  | "ComanderSK" 
+  | "ABB 355" 
+  | "ABB 550" 
+  | "ABB 580" 
+  | "ABB 800" 
+  | "ABB 880" 
+  | "Unico PCP (ЭВН)" 
+  | "Unico SRP (ШГН)" 
+  | "ИРЗ 410" 
+  | "UnidriveM400" 
+  | "IVNT" 
+  | "CanWorld360";
+
 const page = () => {
 
 	const path = usePathname()
@@ -57,6 +73,7 @@ const page = () => {
 						`${getIp()}.tok_dvigatel_percent`,
 						`${getIp()}.rashod_elektr`,
 						`${getIp()}.bus_voltage`,
+						`${getIp()}.type_FC`
 					],
 				})
 
@@ -81,12 +98,12 @@ const page = () => {
 					{ label: 'Контроль питания', value: "В норме", status: "normal" },
 				])
 				setVfdData([
-					{ label: 'Тип частотника', value: "0" },
+					{ label: 'Тип частотника', value: getFC(data[17].value) },
 					{ label: 'Выходная частота', value: data[1].value, unit: 'Гц' },
 					{ label: 'Ток двигателя', value: data[0].value, unit: 'A' },
 					{ label: 'Нагрузка двигателя', value: data[5].value, unit: '%' },
 					{ label: 'Расход эл. энергии', value: data[5].value, unit: 'кВт' },
-					{ label: 'Напр. звене пост. тока', value: 0, unit: 'В' },
+					{ label: 'Напр. звене пост. тока', value: data[16].value, unit: 'В' },
 					{ label: 'Температура ЧРП', value: data[13].value, unit: '°C' },
 					{ label: 'Скорость двигателя', value: data[2].value, unit: 'об/мин' },
 				])
@@ -98,6 +115,27 @@ const page = () => {
 		const interval = setInterval(fetchData, 5000)
 		return () => clearInterval(interval)
 	}, [])
+
+	const getFC = (type: number): string => {
+  const map: Record<number, string> = {
+    1: "Нет частотника",
+    2: "Siemens V20",
+    3: "ComanderSK",
+    4: "ABB 355",
+    5: "ABB 550",
+    6: "ABB 580",
+    7: "ABB 800",
+    8: "ABB 880",
+    9: "Unico PCP (ЭВН)",
+    10: "Unico SRP (ШГН)",
+    11: "ИРЗ 410",
+    12: "UnidriveM400",
+    13: "IVNT",
+    14: "CanWorld360",
+  };
+
+  return map[type] ?? "Нет частотника";
+};
 
 	return (
 		telemetryData
