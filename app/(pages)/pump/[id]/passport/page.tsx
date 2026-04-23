@@ -6,6 +6,8 @@ import { usePathname, useRouter } from 'next/navigation'
 import PumpFormModal from './widget'
 import { useEffect, useState } from 'react'
 import { IPassportPump } from './passport'
+import IClose from '@/app/assets/close.png'
+import Image from 'next/image'
 
 interface Metric {
 	label: string
@@ -23,7 +25,7 @@ const page = () => {
 	}
 
 	const passports = usePassportStore(state => state.passports)
-	const update = usePassportStore(state => state.updatePump)
+	const delete_rpc = usePassportStore(state => state.deletePRC)
 
 	const passport_pump = passports.passport_pump.find(el => el.id === getIp())
 	const passport_prc = passports.passport_prc.find(el => el.id === getIp())
@@ -113,6 +115,10 @@ const page = () => {
 		setOpen(true)
 	}
 
+	const delData = (id: number) => {
+		delete_rpc(getIp(), id)
+	}
+
 	return (
 		<div className='min-h-screen  p-6 text-slate-100 font-sans ml-74 w-full'>
 			<div className='max-w-6xl mx-auto mb-8 border-b border-slate-800 pb-6'>
@@ -188,27 +194,33 @@ const page = () => {
 						<tr className=' text-slate-100  uppercase text-xs tracking-wider w-full'>
 							<th className='px-6 py-4 border-slate-700'>№</th>
 							<th className='px-6 py-4 border-slate-700'>Дата</th>
-							<th className='px-6 py-4 border-slate-700'>
-								Модель износа
-							</th>
+							<th className='px-6 py-4 border-slate-700'>Модель износа</th>
 							<th className='px-6 py-4  border-slate-700'>Износ, %</th>
+							<th className='px-6 py-4  border-slate-700'>Удалить</th>
 						</tr>
 					</thead>
 					<tbody className='divide-y divide-slate-800'>
-						{
-							passport_prc
-							? 
-							passport_prc.data.map(el => (
-						<tr className='transition-colors' key={el.id+el.data}>
-							<td className='px-6 py-3 text-slate-100 font-mono'>{el.id}</td>
-							<td className='px-6 py-3 text-slate-100 font-mono'>{el.data}</td>
-							<td className='px-6 py-3 text-slate-100 font-mono'>{el.model}</td>
-							<td className='px-6 py-3 text-slate-100 font-mono'>{el.iznos || 0}</td>
-						</tr>
-							))
-							: 
-							""
-						}
+						{passport_prc
+							? passport_prc.data.map(el => (
+									<tr className='transition-colors' key={el.id + el.data}>
+										<td className='px-6 py-3 text-slate-100 font-mono'>
+											{el.id}
+										</td>
+										<td className='px-6 py-3 text-slate-100 font-mono'>
+											{el.data}
+										</td>
+										<td className='px-6 py-3 text-slate-100 font-mono'>
+											{el.model}
+										</td>
+										<td className='px-6 py-3 text-slate-100 font-mono'>
+											{el.iznos || 0}
+										</td>
+										<td className='px-6 py-3 text-slate-200'>
+											<Image src={IClose} className='w-8 ml-4 cursor-pointer hover:scale-105 duration-200' alt='...' onClick={() => delData(el.id)} />
+										</td>
+									</tr>
+								))
+							: ''}
 					</tbody>
 				</table>
 			</div>

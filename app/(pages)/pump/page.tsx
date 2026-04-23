@@ -61,7 +61,6 @@ const page = () => {
 						],
 					}),
 				])
-        console.log(response[0].data[0].value)
 				setData([
 					{
 						id: 2432,

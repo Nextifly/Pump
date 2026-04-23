@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Industrial Monitoring Dashboard</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body { font-family: sans-serif; padding: 20px; background: #f4f4f9; }
+        .chart-container { width: 800px; margin: 20px auto; background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+        h2 { text-align: center; color: #333; }
+    </style>
+</head>
+<body>
+
+    <div class="chart-container">
+        <h2>Efficiency</h2>
+        <canvas id="eff15"></canvas>
+        <canvas id="eff60"></canvas>
+    </div>
+
+    <div class="chart-container">
+        <h2>TDP</h2>
+        <canvas id="tdp15"></canvas>
+        <canvas id="tdp60"></canvas>
+    </div>
+
+    <div class="chart-container">
+        <h2>Utilization — Scatter Chart</h2>
+        <canvas id="util1d"></canvas>
+        <canvas id="util1m"></canvas>
+    </div>
+
+    <script>
+        // Общие настройки для Line чартов
+        const lineOptions = { responsive: true, scales: { y: { beginAtZero: false } } };
+
+        // 1. Efficiency Chart (Line)
+        new Chart(document.getElementById('eff15'), {
+            type: 'line',
+            data: {
+                labels: ['11:00', '13:00', '15:00', '22:00', '22:30', '23:00', '00:00', '03:00', '15:00'],
+                datasets: [{ label: '15-min Aggregation', data: [2.1, 2.1, 2.1, 2.1, 2.2, 2.8, 2.8, 2.8, 10.3, 2.8], borderColor: '#36a2eb', tension: 0.1 }]
+            },
+            options: lineOptions
+        });
+
+        new Chart(document.getElementById('eff60'), {
+            type: 'line',
+            data: {
+                labels: ['11:00', '15:00', '19:00', '23:00', '01:00', '09:00', '21:00'],
+                datasets: [{ label: '60-min Aggregation', data: [2.15, 2.15, 2.15, 2.15, 2.78, 2.78, 2.78], borderColor: '#36a2eb' }]
+            },
+            options: lineOptions
+        });
+
+        // 2. TDP Chart (Line)
+        new Chart(document.getElementById('tdp15'), {
+            type: 'line',
+            data: {
+                labels: ['11:00', '22:00', '22:30', '00:00', '15:00'],
+                datasets: [{ label: '15-min Aggregation', data: [7.66, 7.66, 7.85, 7.62, 8.2, 7.62], borderColor: '#4bc0c0' }]
+            },
+            options: lineOptions
+        });
+
+        new Chart(document.getElementById('tdp60'), {
+            type: 'line',
+            data: {
+                labels: ['11:00', '15:00', '23:00', '01:00', '15:00'],
+                datasets: [{ label: '60-min Aggregation', data: [7.66, 7.66, 7.66, 7.61, 7.61], borderColor: '#4bc0c0' }]
+            },
+            options: lineOptions
+        });
+
+        // 3. Utilization (Scatter)
+        // Для Scatter важно использовать массив объектов {x, y}
+        const generateScatterData = (count) => Array.from({length: count}, () => ({x: Math.random() * 250, y: Math.random() * 100}));
+        
+        new Chart(document.getElementById('util1d'), {
+            type: 'scatter',
+            data: {
+                datasets: [{ label: 'Daily Aggregation', data: generateScatterData(200), backgroundColor: 'rgba(255, 159, 64, 0.5)' }]
+            }
+        });
+
+        new Chart(document.getElementById('util1m'), {
+            type: 'scatter',
+            data: {
+                datasets: [{ label: 'Monthly Aggregation', data: [{x:1, y:12}, {x:2, y:23}, {x:3, y:35}, {x:4, y:48}, {x:5, y:60}, {x:6, y:77}, {x:7, y:90}], backgroundColor: 'rgba(255, 99, 132, 0.5)' }]
+            }
+        });
+    </script>
+</body>
+</html>

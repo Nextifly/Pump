@@ -174,7 +174,7 @@ const page = () => {
 							))}
 						</div>
 					</div>
-					<Link href='#'>
+					<Link href={`/pump/${getIp}/predict`}>
 						<button className='bg-slate-900/50 border border-slate-800 rounded-xl p-3 backdrop-blur-sm mt-5 w-full text-slate-100 cursor-pointer hover:bg-slate-950/50 duration-400'>
 							Предиктивный блок
 						</button>

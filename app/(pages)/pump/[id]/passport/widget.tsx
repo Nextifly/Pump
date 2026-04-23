@@ -25,23 +25,27 @@ const PumpFormModal = ({ isOpen, onClose }: Props) => {
 		iznos: 0,
 		check: false,
 		count: 0,
-		reception: 0
+		reception: 0,
 	})
 
 	if (!isOpen) return null
 
 	const handleSubmit = () => {
-		const currentPump = data.find(item => item.id === getIp())
-
-		// Получаем длину массива data внутри этого насоса
-		const currentCount = currentPump ? currentPump.data.length : 0
-
 		addEntry({
 			id: getIp(),
 			data: {
 				...formData,
-				id: currentCount + 1,
+				id: Math.floor(Math.random() * 90000) + 10000,
 			},
+		})
+
+		setFormData({
+			data: '',
+			model: '',
+			iznos: 0,
+			check: false,
+			count: 0,
+			reception: 0,
 		})
 
 		onClose()

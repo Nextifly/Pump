@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Насос 6351 - TP-10 | Визуализация метрик</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+    <style>
+        body {
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background: #f8f9fa;
+            color: #212529;
+        }
+        h1 { text-align: center; margin-bottom: 30px; }
+        .pump-section {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            padding: 25px;
+            margin-bottom: 40px;
+        }
+        .metric-row { margin-bottom: 40px; }
+        .metric-title {
+            font-size: 1.4rem;
+            margin-bottom: 15px;
+            padding-bottom: 8px;
+            border-bottom: 3px solid;
+        }
+        .charts-container {
+            display: flex;
+            gap: 25px;
+            flex-wrap: wrap;
+        }
+        .chart-wrapper {
+            flex: 1;
+            min-width: 480px;
+            background: white;
+            border-radius: 10px;
+            padding: 15px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        }
+        .chart-title {
+            text-align: center;
+            margin-bottom: 12px;
+            font-weight: 600;
+            font-size: 1.1rem;
+        }
+        canvas { max-height: 420px; }
+    </style>
+</head>
+<body>
+<h1>Насос: 6351 - TP-10</h1>
+
+<div class="pump-section">
+
+    <!-- EFFICIENCY -->
+    <div class="metric-row">
+        <div class="metric-title" style="border-color: #3498db; color: #3498db;">Efficiency</div>
+        <div class="charts-container">
+            <div class="chart-wrapper">
+                <div class="chart-title">15-минутная агрегация</div>
+                <canvas id="eff-15m"></canvas>
+            </div>
+            <div class="chart-wrapper">
+                <div class="chart-title">60-минутная агрегация</div>
+                <canvas id="eff-60m"></canvas>
+            </div>
+        </div>
+    </div>
+
+    <!-- TDP -->
+    <div class="metric-row">
+        <div class="metric-title" style="border-color: #2ecc71; color: #2ecc71;">TDP</div>
+        <div class="charts-container">
+            <div class="chart-wrapper">
+                <div class="chart-title">15-минутная агрегация</div>
+                <canvas id="tdp-15m"></canvas>
+            </div>
+            <div class="chart-wrapper">
+                <div class="chart-title">60-минутная агрегация</div>
+                <canvas id="tdp-60m"></canvas>
+            </div>
+        </div>
+    </div>
+
+    <!-- UTILIZATION -->
+    <div class="metric-row">
+        <div class="metric-title" style="border-color: #e67e22; color: #e67e22;">Utilization — Scatter Chart</div>
+        <div class="charts-container">
+            <div class="chart-wrapper">
+                <div class="chart-title">Дневная агрегация (1d)</div>
+                <canvas id="util-1d"></canvas>
+            </div>
+            <div class="chart-wrapper">
+                <div class="chart-title">Месячная агрегация (1m)</div>
+                <canvas id="util-1m"></canvas>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<script>
+    const BASE_COLORS = {
+        efficiency: '#3498db',
+        tdp: '#2ecc71'
+    };
+
+    // Цвет + прозрачность = k * level
+    function getUtilizationColor(level, isTop) {
+        const k = isTop ? 0.5 : 0.25;
+        const opacity = k * level;   // ← именно то, что вы просили
+
+        if (level >= 0.85) {                    // 0.9
+            return `rgba(52, 152, 219, ${opacity})`;   // Синий
+        } else if (level >= 0.75) {             // 0.8
+            return `rgba(80, 170, 200, ${opacity})`;   // Голубой
+        } else if (level >= 0.65) {             // 0.7
+            return `rgba(46, 204, 113, ${opacity})`;   // Зелёный
+        } else if (level >= 0.55) {             // 0.6
+            return `rgba(180, 200, 70, ${opacity})`;   // Желто-зелёный
+        } else {                                // 0.5
+            return `rgba(231, 76, 60, ${opacity})`;    // Красный
+        }
+    }
+
+    async function loadData() {
+        const response = await fetch('efficiency_full_export.json');
+        if (!response.ok) {
+            alert('Не удалось загрузить файл efficiency_full_export.json');
+            return null;
+        }
+        return await response.json();
+    }
+
+    // Line Fan Chart для Efficiency и TDP
+    function createLineFanChart(canvasId, metricKey, granularity, data) {
+        const pumpData = data['6351 - TP-10'][metricKey][granularity];
+        const labels = pumpData.x;
+        const baseColor = BASE_COLORS[metricKey];
+        const datasets = [];
+
+        [0.9, 0.8, 0.7, 0.6, 0.5].forEach(level => {
+            const alpha = Math.round((1 - level) * 255).toString(16).padStart(2, '0');
+            const fillColor = baseColor + alpha;
+
+            datasets.push({
+                label: `${level*100}% Top`,
+                data: pumpData[`yTop_${level}`],
+                borderColor: baseColor,
+                backgroundColor: fillColor,
+                borderWidth: 1,
+                fill: '-1',
+                tension: 0.2
+            });
+
+            datasets.push({
+                label: `${level*100}% Bottom`,
+                data: pumpData[`yBtm_${level}`],
+                borderColor: baseColor,
+                backgroundColor: 'transparent',
+                borderWidth: 0,
+                fill: false,
+                hidden: true
+            });
+        });
+
+        new Chart(document.getElementById(canvasId), {
+            type: 'line',
+            data: { labels, datasets },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: { legend: { display: false } },
+                scales: { x: { ticks: { maxRotation: 45 } } }
+            }
+        });
+    }
+
+    // Scatter Chart для Utilization
+    function createUtilScatterChart(canvasId, granularity, data) {
+        const pumpData = data['6351 - TP-10'].utilization[granularity];
+        const labels = pumpData.x;
+        const datasets = [];
+
+        [0.9, 0.8, 0.7, 0.6, 0.5].forEach(level => {
+            const topColor = getUtilizationColor(level, true);   // k=0.5
+            const bottomColor = getUtilizationColor(level, false); // k=0.25
+
+            // Top
+            datasets.push({
+                label: `${level*100}% Top`,
+                data: labels.map((_, i) => ({ x: i, y: pumpData[`yTop_${level}`][i] })),
+                backgroundColor: topColor,
+                borderWidth: 0,
+                pointRadius: 4,
+                type: 'scatter'
+            });
+
+            // Bottom + заливка
+            datasets.push({
+                label: `${level*100}% Bottom`,
+                data: labels.map((_, i) => ({ x: i, y: pumpData[`yBtm_${level}`][i] })),
+                backgroundColor: bottomColor,
+                borderWidth: 0,
+                pointRadius: 4,
+                fill: '-1',
+                type: 'scatter'
+            });
+        });
+
+        new Chart(document.getElementById(canvasId), {
+            type: 'scatter',
+            data: { datasets },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { display: false },
+                    tooltip: { mode: 'index', intersect: false }
+                },
+                scales: {
+                    x: {
+                        type: 'linear',
+                        title: { display: true, text: 'Время' },
+                        ticks: { callback: (value) => labels[Math.round(value)] || '' }
+                    },
+                    y: {
+                        title: { display: true, text: 'Utilization' }
+                    }
+                }
+            }
+        });
+    }
+
+    async function init() {
+        const data = await loadData();
+        if (!data) return;
+
+        createLineFanChart('eff-15m', 'efficiency', '15m', data);
+        createLineFanChart('eff-60m', 'efficiency', '60m', data);
+        createLineFanChart('tdp-15m', 'tdp', '15m', data);
+        createLineFanChart('tdp-60m', 'tdp', '60m', data);
+
+        createUtilScatterChart('util-1d', '1d', data);
+        createUtilScatterChart('util-1m', '1m', data);
+
+        console.log('%c✅ Готово: Top = 0.5 × level, Bottom = 0.25 × level', 'color: #27ae60; font-weight: bold;');
+    }
+
+    window.onload = init;
+</script>
+</body>
+</html>

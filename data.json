@@ -1,142 +1,120 @@
 {
 	"state": {
-		"passports": {
-			"passport_pump": [
-				{
-					"id": 2432,
-					"specification": {
-						"mark": "ТР-10-600",
-						"interval": "267.0-273.5",
-						"reception": 260,
-						"liquid_level_1": 239,
-						"liquid_level_2": 244,
-						"count": 31,
-						"viscosity": 541
+		"passports": [
+			{
+				"name": "PTB-10A-1",
+				"values": [
+					{
+						"id": 1,
+						"flow_product_m3": 160,
+						"density_oil": 0.97,
+						"water_cut": 83,
+						"density_emulsion": 0.995,
+						"flow_product_t": 159.2,
+						"press_product_in": 0.9,
+						"press_product_out": 0.8,
+						"temp_product_in": 30,
+						"temp_product_out": 53,
+						"temp_product_avg": 42,
+						"temp_delta": 23,
+						"heat_capacity": 0.904,
+						"heat_power_fact": 6.62,
+						"press_air": 1.2,
+						"press_gas": 30,
+						"temp_flue_gas": 426,
+						"gas_co2": 6.29,
+						"gas_o2": 9.8,
+						"gas_co_ppm": 25,
+						"gas_no_ppm": 0.01612,
+						"air_excess_ratio": 1.88,
+						"losses_env_nom": 3,
+						"temp_env": 15,
+						"efficiency_combust": 66.34,
+						"heat_power_nom": 10,
+						"fuel_heat_value": 8406,
+						"balance_q2": 29.13,
+						"balance_q3": 0,
+						"balance_q5": 4.53,
+						"efficiency_brutto": 66.34,
+						"flow_gas": 594,
+						"specific_fuel_equiv": 215.5,
+						"specific_fuel_nat": 179.3
 					},
-					"property": {
-						"density": 0.9292,
-						"gas": 5.29,
-						"impurities": 1,
-						"mineralization": "н/д",
-						"average_water_content": 44.1,
-						"average_gf": 5.7,
-						"average_gn": 3
-					}
-				},
-				{
-					"id": 5875,
-					"specification": {
-						"mark": "ТР-28-600",
-						"interval": "434-436 437-441",
-						"reception": 429,
-						"liquid_level_1": 400,
-						"liquid_level_2": 228,
-						"count": 51,
-						"viscosity": 411
+					{
+						"id": 2,
+						"flow_product_m3": 160,
+						"density_oil": 0.97,
+						"water_cut": 83,
+						"density_emulsion": 0.995,
+						"flow_product_t": 159.2,
+						"press_product_in": 0.9,
+						"press_product_out": 0.8,
+						"temp_product_in": 30,
+						"temp_product_out": 53,
+						"temp_product_avg": 42,
+						"temp_delta": 23,
+						"heat_capacity": 0.904,
+						"heat_power_fact": 3.31,
+						"press_air": 1.2,
+						"press_gas": 30,
+						"temp_flue_gas": 426,
+						"gas_co2": 6.29,
+						"gas_o2": 9.8,
+						"gas_co_ppm": 25,
+						"gas_no_ppm": 0.01612,
+						"air_excess_ratio": 1.88,
+						"losses_env_nom": 3,
+						"temp_env": 15,
+						"efficiency_combust": 66.34,
+						"heat_power_nom": 10,
+						"fuel_heat_value": 8406,
+						"balance_q2": 29.13,
+						"balance_q3": 0,
+						"balance_q5": 4.53,
+						"efficiency_brutto": 66.34,
+						"flow_gas": 594,
+						"specific_fuel_equiv": 215.5,
+						"specific_fuel_nat": 179.3
 					},
-					"property": {
-						"density": 0.9211,
-						"gas": 9.08,
-						"impurities": 0,
-						"mineralization": "н/д",
-						"average_water_content": 95,
-						"average_gf": 27.1,
-						"average_gn": 1.27
+					{
+						"id": 3,
+						"flow_product_m3": 160,
+						"density_oil": 0.97,
+						"water_cut": 83,
+						"density_emulsion": 0.995,
+						"flow_product_t": 159.2,
+						"press_product_in": 0.9,
+						"press_product_out": 0.8,
+						"temp_product_in": 30,
+						"temp_product_out": 53,
+						"temp_product_avg": 42,
+						"temp_delta": 23,
+						"heat_capacity": 0.904,
+						"heat_power_fact": 3.31,
+						"press_air": 1.2,
+						"press_gas": 30,
+						"temp_flue_gas": 426,
+						"gas_co2": 6.29,
+						"gas_o2": 9.8,
+						"gas_co_ppm": 25,
+						"gas_no_ppm": 0.01612,
+						"air_excess_ratio": 1.88,
+						"losses_env_nom": 3,
+						"temp_env": 15,
+						"efficiency_combust": 66.34,
+						"heat_power_nom": 10,
+						"fuel_heat_value": 8406,
+						"balance_q2": 29.13,
+						"balance_q3": 0,
+						"balance_q5": 4.53,
+						"efficiency_brutto": 66.34,
+						"flow_gas": 594,
+						"specific_fuel_equiv": 215.5,
+						"specific_fuel_nat": 179.3
 					}
-				},
-				{
-					"id": 6416,
-					"specification": {
-						"mark": "ТР-28-600",
-						"interval": "323-327 332-337",
-						"reception": 300,
-						"liquid_level_1": 211,
-						"liquid_level_2": 272,
-						"count": 35,
-						"viscosity": 378
-					},
-					"property": {
-						"density": 0.9282,
-						"gas": 5.97,
-						"impurities": 0,
-						"mineralization": "н/д",
-						"average_water_content": 92,
-						"average_gf": 21.4,
-						"average_gn": 1.61
-					}
-				},
-				{
-					"id": 5004,
-					"specification": {
-						"mark": "ТР-42-600 ",
-						"interval": "321-326,5",
-						"reception": 312,
-						"liquid_level_1": 259,
-						"liquid_level_2": 82,
-						"count": 34,
-						"viscosity": 541
-					},
-					"property": {
-						"density": 0.9292,
-						"gas": 5.29,
-						"impurities": 0,
-						"mineralization": "н/д",
-						"average_water_content": 93.7,
-						"average_gf": 42.6,
-						"average_gn": 2.51
-					}
-				},
-				{
-					"id": 5831,
-					"specification": {
-						"mark": "ТР-16-600",
-						"interval": "450.0-455.0",
-						"reception": 420,
-						"liquid_level_1": 380,
-						"liquid_level_2": 0,
-						"count": 52,
-						"viscosity": 411
-					},
-					"property": {
-						"density": 0.9211,
-						"gas": 9.08,
-						"impurities": 0,
-						"mineralization": "н/д",
-						"average_water_content": 77,
-						"average_gf": 15,
-						"average_gn": 3.24
-					}
-				}
-			],
-			"passport_prc": [
-				{
-					"id": 5875,
-					"data": [
-						{
-							"data": "2026-04-02",
-							"model": "564",
-							"iznos": 0,
-							"check": true,
-							"id": 1
-						},
-						{
-							"data": "",
-							"model": "hfyg",
-							"iznos": 56,
-							"check": false,
-							"id": 2
-						},
-						{
-							"data": "2026-04-09",
-							"model": "trf",
-							"iznos": 0,
-							"check": true,
-							"id": 2
-						}
-					]
-				}
-			]
-		}
+				]
+			}
+		]
 	},
 	"version": 0
 }
