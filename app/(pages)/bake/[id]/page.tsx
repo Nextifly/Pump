@@ -7,6 +7,7 @@ import React, { useState, useEffect } from 'react';
 
 import IClose from '@/app/assets/close.png'
 import Image from 'next/image'
+import bakeApi from './bakeApi';
 
 // Тип для описания строки таблицы
 interface TableRow {
@@ -40,7 +41,7 @@ const FullParameterTable = () => {
   const [loading, setLoading] = useState(true);
 
 		const pathname = usePathname()
-	
+
 		const getName = () => {
 			const arr_path = pathname.split('/')
 			return arr_path[2]
@@ -49,120 +50,8 @@ const FullParameterTable = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        console.log(getName())
-        if (getName() == "PTB-10A-1") {
-          const data = await WINCC_API.post('/values', {
-            variableNames: [
-              "OilPressureOnComINDB_OutV_111", // Заменить
-              "OilPressureOnComINDB_OutV_111", // Заменить
-              "OilPressureOnComINDB_OutV_111",
-              "MainOB_RTDOilComIn_111",
-              "AirPressureDB_OutV",
-              "MainOB_GasVihlop111",
-              "MainOB_GasVihlop222",
-              "MainOB_RTDOilOutHeater111",
-              "MainOB_RTDOilOutHeater222",
-              "OilPressureOnComOUTDB_OutV_111",
-              "MainOB_RTDOilComOut111",
-              "MainOB_FlowPereshet_111",
-              "MainOB_FlowPereshet_111", // Заменить
-              "AirPressureAftMainValveDB_OutV",
-              "AirPressureB4MainValveDB_OutV",
-            ]
-          });
-          setData({
-          temp_zmeevik_1: 0,
-          temp_zmeevik_2: 0,
-          press_oil_in: data.data[2].value,
-          temp_oil_in: data.data[3].value,
-          press_air: data.data[4].value,
-          temp_gas_1: data.data[5].value,
-          temp_gas_2: data.data[6].value,
-          temp_flow_1: data.data[7].value,
-          temp_flow_2: data.data[8].value,
-          press_oil_out: data.data[9].value,
-          temp_oil_out: data.data[10].value,
-          flow_oil: data.data[11].value,
-          flow_gas: 0,
-          press_gas_after: data.data[13].value,
-          press_gas_before: data.data[14].value,
-        })};
-        if (getName() == "PTB-10A-2") {
-          const data = await WINCC_API.post('/values', {
-            variableNames: [
-              "OilPressureOnComINDB_OutV_1", // Заменить
-              "OilPressureOnComINDB_OutV_1", // Заменить
-              "OilPressureOnComINDB_OutV_1",
-              "MainOB_RTDOilComIn_1",
-              "AirPressureDB_OutV_1",
-              "MainOB_GasVihlop3",
-              "MainOB_GasVihlop4",
-              "MainOB_RTDOilOutHeater3",
-              "MainOB_RTDOilOutHeater4",
-              "OilPressureOnComOUTDB_OutV_1",
-              "MainOB_RTDOilComOut4",
-              "MainOB_FlowPereshet_1",
-              "MainOB_FlowPereshet_1", // Заменить
-              "AirPressureAftMainValveDB_OutV_1",
-              "AirPressureB4MainValveDB_OutV_1",
-            ]
-          });
-          setData({
-          temp_zmeevik_1: 0,
-          temp_zmeevik_2: 0,
-          press_oil_in: data.data[2].value,
-          temp_oil_in: data.data[3].value,
-          press_air: data.data[4].value,
-          temp_gas_1: data.data[5].value,
-          temp_gas_2: data.data[6].value,
-          temp_flow_1: data.data[7].value,
-          temp_flow_2: data.data[8].value,
-          press_oil_out: data.data[9].value,
-          temp_oil_out: data.data[10].value,
-          flow_oil: data.data[11].value,
-          flow_gas: 0,
-          press_gas_after: data.data[13].value,
-          press_gas_before: data.data[14].value,
-        });
-        }
-        if (getName() == "PTB-10A-3") {
-          const data = await WINCC_API.post('/values', {
-            variableNames: [
-              "OilPressureOnComINDB_OutV_3", // Заменить
-              "OilPressureOnComINDB_OutV_3", // Заменить
-              "OilPressureOnComINDB_OutV_3",
-              "MainOB_RTDOilComIn_3",
-              "AirPressureDB_OutV_3",
-              "MainOB_GasVihlop53",
-              "MainOB_GasVihlop63",
-              "MainOB_RTDOilOutHeater53",
-              "MainOB_RTDOilOutHeater63",
-              "OilPressureOnComOUTDB_OutV_3",
-              "MainOB_RTDOilComOut53",
-              "MainOB_FlowPereshet_3",
-              "MainOB_FlowPereshet_3", // Заменить
-              "AirPressureAftMainValveDB_OutV_3",
-              "AirPressureB4MainValveDB_OutV_3",
-            ]
-          });
-          setData({
-          temp_zmeevik_1: 0,
-          temp_zmeevik_2: 0,
-          press_oil_in: data.data[2].value,
-          temp_oil_in: data.data[3].value,
-          press_air: data.data[4].value,
-          temp_gas_1: data.data[5].value,
-          temp_gas_2: data.data[6].value,
-          temp_flow_1: data.data[7].value,
-          temp_flow_2: data.data[8].value,
-          press_oil_out: data.data[9].value,
-          temp_oil_out: data.data[10].value,
-          flow_oil: data.data[11].value,
-          flow_gas: 0,
-          press_gas_after: data.data[13].value,
-          press_gas_before: data.data[14].value,
-        });
-        }
+        const response = await bakeApi(getName())
+        setData(response)
         setLoading(false);
       } catch (err) {
         console.error("Ошибка загрузки данных:", err);
@@ -204,7 +93,7 @@ const FullParameterTable = () => {
           </table>
         </div>
 				<div className='flex w-full justify-between gap-4'>
-					<Link href='#' className='w-[50%]'>
+					<Link href={`/bake/${getName()}/predict`} className='w-[50%]'>
 						<button className='bg-slate-900/50 border border-slate-800 rounded-xl p-3 backdrop-blur-sm mt-5 text-slate-100 cursor-pointer hover:bg-slate-950/50 duration-400 w-full'>
 							Предиктивный блок
 						</button>

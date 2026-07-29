@@ -3,6 +3,7 @@
 import { WINCC_API } from '@/app/utils/api'
 import { useRouter } from 'next/navigation'
 import { useState, useEffect } from 'react'
+import bakeAllApi from './bakeAllApi'
 
 interface IData {
 	name: string
@@ -23,73 +24,8 @@ const page = () => {
 	useEffect(() => {
 		const fetchData = async () => {
 			try {
-				const response = await Promise.all([
-					await WINCC_API.post('/values', {
-						variableNames: [
-							'MainOB_RTDOilOutHeater111',
-              'MainOB_RTDOilOutHeater222',
-              'OilPressureOnComINDB_OutV_111',
-              'MainOB_GasVihlop111', // сменить
-              'AirPressureDB_OutV',
-              'MB_READ_Flow_Rate_111',
-              'MainOB_RTDOilComIn_111',
-						],
-					}),
-					await WINCC_API.post('/values', {
-						variableNames: [
-							'MainOB_RTDOilOutHeater3',
-              'MainOB_RTDOilOutHeater4',
-              'OilPressureOnComINDB_OutV_1',
-              'MainOB_GasVihlop111', // сменить
-              'AirPressureDB_OutV_1',
-              'MB_READ_Flow_Rate_1',
-              'MainOB_RTDOilComIn_1',
-						],
-					}),
-					await WINCC_API.post('/values', {
-						variableNames: [
-							'MainOB_RTDOilOutHeater53',
-              'MainOB_RTDOilOutHeater63',
-              'OilPressureOnComINDB_OutV_3',
-              'MainOB_GasVihlop111', // сменить
-              'AirPressureDB_OutV_3',
-              'MB_READ_Flow_Rate_3',
-              'MainOB_RTDOilComIn_3',
-						],
-					}),
-				])
-				setData([
-					{
-						name: 'PTB-10A-1',
-						temp1: response[0].data[0].value.slice(0,5),
-						temp2: response[0].data[1].value.slice(0,5),
-						pressure_oil: response[0].data[2].value.slice(0,5),
-						temp_oil: response[0].data[3].value.slice(0,5),
-						pressure_void: response[0].data[4].value.slice(0,5),
-						expenditure_oil: response[0].data[5].value.slice(0,5),
-						temp_exit_oil: response[0].data[6].value.slice(0,5),
-					},
-					{
-						name: 'PTB-10A-2',
-						temp1: response[1].data[0].value.slice(0,5),
-						temp2: response[1].data[1].value.slice(0,5),
-						pressure_oil: response[1].data[2].value.slice(0,5),
-						temp_oil: response[1].data[3].value.slice(0,5),
-						pressure_void: response[1].data[4].value.slice(0,5),
-						expenditure_oil: response[1].data[5].value.slice(0,5),
-						temp_exit_oil: response[1].data[6].value.slice(0,5),
-					},
-					{
-						name: 'PTB-10A-3',
-						temp1: response[2].data[0].value.slice(0,5),
-						temp2: response[2].data[1].value.slice(0,5),
-						pressure_oil: response[2].data[2].value.slice(0,5),
-						temp_oil: response[2].data[3].value.slice(0,5),
-						pressure_void: response[2].data[4].value.slice(0,5),
-						expenditure_oil: response[2].data[5].value.slice(0,5),
-						temp_exit_oil: response[2].data[6].value.slice(0,5),
-					},
-				])
+        const response = await bakeAllApi()
+        setData(response)
 			} catch (error) {
 				console.error('Ошибка загрузки:', error)
 			}
@@ -122,7 +58,7 @@ const page = () => {
 
 					<tbody className='divide-y divide-gray-200'>
 						{
-              data 
+              data
               ?
               data.map((row, index) => (
 							<tr
@@ -142,7 +78,7 @@ const page = () => {
 								<td className='px-6 py-4'>{row.temp_exit_oil}</td>
 							</tr>
 						))
-            : 
+            :
             ""
             }
 					</tbody>
